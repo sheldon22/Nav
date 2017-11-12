@@ -24,12 +24,15 @@
             3:['z','x','c','v','b','n','m','!'],
             length: 4 /*数组长度为4*/    }
         var hash ={
-            a:'aiqiyi.com',         b:'baidu.com',                      c:'amazon.cn',          d:'jd.com',
-            e:'t.dianping.com',     f:'freecodecamp.cn',                g:'google.com',         h:'github.com',
-            i:'bilibili.com',       j:'javascript.ruanyifeng.com',      k:'khanacademy.org',    l:'liaoxuefeng.com',
-            n:'imoon.com',          p:'maoyan.com',                     s:'stackoverflow.com',  z:'zhihu.com', 
-            t:'taobao.com',         w:'en.wikipedia.org',               y:'youku.com',          r:'runoob.com', /*菜鸟教程*/    
-            m:'developer.mozilla.org/zh-CN/', /*mdn*/                   o:'open.163.com', /*网易公开课*/ } 
+            a:'aiqiyi.com',             b:'baidu.com',                      c:'amazon.cn',          d:'jd.com',
+            e:'t.dianping.com',         f:'freecodecamp.cn',                g:'google.com',         h:'github.com',
+            i:'bilibili.com',           j:'javascript.ruanyifeng.com',      k:'khanacademy.org',    l:'liaoxuefeng.com',
+            m:'developer.mozilla.org',  n:'imoon.com',                      o:'open.163.com',       p:'maoyan.com',         
+            q:'tv.sohu.com',            r:'runoob.com',                     s:'stackoverflow.com',  t:'taobao.com', 
+            u:'m.weibo.cn',             v:'cn.bing.com',                    w:'en.wikipedia.org',   x:'music.163.com',
+            y:'youku.com',              z:'zhihu.com', 
+                                        
+                                } 
         var hashInlocalStorage= JSON.parse(localStorage.getItem('uuu') || 'null') /*取出localStorage中 zzz 对应的 hash*/
         if(hashInlocalStorage){
             hash = hashInlocalStorage}
