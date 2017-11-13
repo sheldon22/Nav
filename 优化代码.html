@@ -17,73 +17,117 @@
     <footer></footer>
     <script>
         //  1. 初始化数据
-        var keys ={
-            0:['1','2','3','4','5','6','7','8','9','0','-'],
-            1:['q','w','e','r','t','y','u','i','o','p'],
-            2:['a','s','d','f','g','h','j','k','l'],
-            3:['z','x','c','v','b','n','m','!'],
-            length: 4 /*数组长度为4*/    }
-        var hash ={
-            a:'aiqiyi.com',         b:'baidu.com',                      c:'amazon.cn',          d:'jd.com',
-            e:'t.dianping.com',     f:'freecodecamp.cn',                g:'google.com',         h:'github.com',
-            i:'bilibili.com',       j:'javascript.ruanyifeng.com',      k:'khanacademy.org',    l:'liaoxuefeng.com',
-            n:'imoon.com',          p:'maoyan.com',                     s:'stackoverflow.com',  z:'zhihu.com', 
-            t:'taobao.com',         w:'en.wikipedia.org',               y:'youku.com',          r:'runoob.com', /*菜鸟教程*/    
-            m:'developer.mozilla.org/zh-CN/', /*mdn*/                   o:'open.163.com', /*网易公开课*/ } 
-        var hashInlocalStorage= JSON.parse(localStorage.getItem('uuu') || 'null') /*取出localStorage中 zzz 对应的 hash*/
-        if(hashInlocalStorage){
-            hash = hashInlocalStorage}
+        var hashA = init()
+        var keys = hashA["keys"]
+        var hash = hashA["hash"]      
 
         // 2. 生成键盘  
         /*遍历 keys，生产kbd标签*/
-        var arr = 0 /*当前轮组[key里的序号(0,1,2,3)]*/
-            while(arr < keys.length){
-                var div = document.createElement('div')     /*document.createElement() 创建元素*/
-                    div.className = 'linespacing'
-                main.appendChild(div)                   /*在一个元素里添加东西, 父级元素加ID, 然后写appendChild 需要添加东西的名字*/
-                var row = keys[arr]
-                    word = 0    /*keys里面的字符(q,w,e...)*/
-                        while(word < row.length ){
-                            var kbd =document.createElement('kbd')
-                                kbd.className ='key'                            
-                            div.appendChild(kbd)
-                            var span = document.createElement('span')
-                                span.textContent =row[word]
-                                kbd.appendChild(span)
-                                span.className="text"
-                            var button =document.createElement('button')
-                                button.textContent='Click'
-                                button.id = row[word] 
-                                kbd.appendChild(button) 
-                            var img = document.createElement('img')
-                            if(hash[row[word]]){
-                                img.src = 'http://'+ hash[row[word]] +'/favicon.ico'}
-                            else{
-				                img.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'}
-                                img.onerror = function(fail){
-                                    fail.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'}
-                                kbd.appendChild(img)
-                                button.onclick = function(record){
-                                var button2 = record['target']
-                                var img2 = button2.previousSibling
-                                    console.log(button2.previousSibling)
-                                var key = button2['id']
-                                var x = prompt('give me five')
-                                hash[key] = x /*hash变更*/
-                                img2.src = 'http://'+ hash[row[word]] +'/favicon.ico'
-                                img.onerror = function(fail){
-                                    fail.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'}
-                                localStorage.setItem('uuu',JSON.stringify(hash))    }
-                            word = word + 1}                   
-            arr = arr + 1 }
+        generateKeyboard(keys,hash)
+        
+        // 3. 监听用户动作
+        listenToUser(hash)
 
-        // 3. 监听键盘
-        document.onkeypress = function(record){         /*document.onkeypress = function(名字随便写){  记录用户键盘的代码*/
-            var key = record['key']                         /*First 记录用户的按键*/
-            var website = hash[key]                         /*Second 得到这个键对应的网站*/
+        // 下面是工具函数
+        function getFromLocalStorage(name){
+			return JSON.parse(localStorage.getItem(name) || 'null')}
+
+        function tag(tagName){
+            return document.createElement(tagName) } /*document.createElement() 创建元素*/ 
+        
+        function createSpan(textContent){
+            var span = tag ('span')
+                span.textContent =textContent
+                span.className="text" 
+            return span}
+                
+        function createButton(id){
+            var button =tag ('button')
+                    button.textContent='Click'
+                    button.id = id 
+            button.onclick = function(record){
+                    var button2 = record['target']
+                    var img2 = button2.previousSibling
+                    var key = button2['id']
+                    var x = prompt('give me five')
+                    hash[key] = x /*hash变更*/
+                    img2.src = 'http://'+ hash[row[word]] +'/favicon.ico'
+                    img.onerror = function(fail){
+                        fail.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'}
+                    localStorage.setItem('uuu',JSON.stringify(hash))    }
+            return button
+        }
+
+        function createImg(domain){
+            var img = tag ('img')
+            if(domain){
+                img.src = 'http://'+ domain +'/favicon.ico'}
+            else{
+				img.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'}
+                    img.onerror = function(fail){
+                        fail.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'}
+            return img
+        }
+
+        function init (){
+            var keys ={
+                0:['1','2','3','4','5','6','7','8','9','0','-'],
+                1:['q','w','e','r','t','y','u','i','o','p'],
+                2:['a','s','d','f','g','h','j','k','l'],
+                3:['z','x','c','v','b','n','m','!'],
+                length: 4 /*数组长度为4*/    }
+            
+            var hash ={
+                a:'aiqiyi.com',             b:'baidu.com',                      c:'amazon.cn',          d:'jd.com',
+                e:'t.dianping.com',         f:'freecodecamp.cn',                g:'google.com',         h:'github.com',
+                i:'bilibili.com',           j:'javascript.ruanyifeng.com',      k:'khanacademy.org',    l:'liaoxuefeng.com',
+                m:'developer.mozilla.org',  n:'imoon.com',                      o:'open.163.com',       p:'maoyan.com',         
+                q:'tv.sohu.com',            r:'runoob.com',                     s:'stackoverflow.com',  t:'taobao.com', 
+                u:'m.weibo.cn',             v:'cn.bing.com',                    w:'en.wikipedia.org',   x:'music.163.com',
+                y:'youku.com',              z:'zhihu.com',                      '1':'dribbble.com',     '2':'alpha.wallhaven.cc',
+                '3':'explainshell.com',     '4':"iconfont.cn",                  '5':"newyorker.com",    '6':"theonion.com"  } 
+     
+            var hashInLocalStorage= getFromLocalStorage('uuu') /*取出localStorage中 zzz 对应的 hash*/
+            if(hashInLocalStorage){
+                hash = hashInlocalStorage}
+            return {
+                "keys": keys,
+                "hash": hash
+            }      
+        }
+        function generateKeyboard(keys, hash){
+            for(arr = 0; arr < keys.length; arr = arr + 1 ){
+            var div = tag ('div')  
+                div.className = 'linespacing'   
+
+                main.appendChild(div)                   /*在一个元素里添加东西, 父级元素加ID, 然后写appendChild 需要添加东西的名字*/
+
+            var row = keys[arr]
+
+            for(var word = 0; word < row.length; word = word + 1){
+                var span = createSpan(row[word])
+                var button = createButton(row[word])
+                var img = createImg(hash[row[word]])
+                var kbd =tag ('kbd')
+                    kbd.className ='key'  
+
+                    kbd.appendChild(span) 
+                    kbd.appendChild(button)                     
+                    kbd.appendChild(img)  
+
+                    div.appendChild(kbd)
+                    
+                }
+        }       
+    }
+        function listenToUser(hash){
+            document.onkeypress = function(record){         /*document.onkeypress = function(名字随便写){  记录用户键盘的代码*/
+                var key = record['key']                         /*First 记录用户的按键*/
+                var website = hash[key]                         /*Second 得到这个键对应的网站*/
             window.open('http://' + website, '_blank')  /*Third 把当前地址在一个空白的页面打开*/
             //location.href = 'http://' + website       /*location.href = 在当前页面打开原先设置的网址*/ 
-        }    
+            }  
+        }
     </script>
 </body>
 </html>
